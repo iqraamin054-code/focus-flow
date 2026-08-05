@@ -2,6 +2,15 @@
 
 > 🚧 **Status: Work in Progress**
 
+<p align="center">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/LocalStorage-4A5568?style=for-the-badge&logo=googlechrome&logoColor=white" />
+  <img src="https://img.shields.io/badge/Responsive-UI-22C55E?style=for-the-badge" />
+</p>
+
 Focus Flow is a calm and visually engaging productivity application designed to help users create a focused work environment and manage their tasks without unnecessary distractions.
 
 Unlike traditional productivity tools that can feel overwhelming, Focus Flow aims to provide a peaceful and simple experience where users can organize their work, set a focus session, and stay engaged with their goals.
