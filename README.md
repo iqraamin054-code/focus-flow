@@ -103,4 +103,4 @@ Focus Flow is currently under active development. The existing interface and cor
 
 Software Engineering Student | Frontend Developer
 
-GitHub: https://github.com/YOUR-USERNAME
+GitHub: https://github.com/iqraamin054-code/focus-flow
