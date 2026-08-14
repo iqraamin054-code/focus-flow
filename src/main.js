@@ -1,3 +1,18 @@
+/**
+ * MIGRATION CANDIDATE — main.js
+ *
+ * This file is NOT loaded by the browser. The active entry point is
+ * src/main.tsx (React). All functionality has been migrated to:
+ *
+ *   - src/components/LandingScene3D.tsx  (WebGL 3D scene)
+ *   - src/components/HeroReactor.tsx     (reactor timer + mantra orb)
+ *   - src/pages/Landing.tsx             (scroll parallax, scroll reveals,
+ *                                        stats reveal, hero orbit parallax,
+ *                                        badge quote rotation)
+ *
+ * Safe to delete after build verification passes.
+ */
+
 import { init3DTilt } from './app.js';
 import { LandingScene, isWebGLAvailable } from './landing-scene.js';
 import {

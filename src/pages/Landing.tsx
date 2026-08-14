@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { LandingScene3D } from '../components/LandingScene3D';
@@ -17,6 +17,7 @@ const BADGE_QUOTES = [
 export const Landing: React.FC = () => {
   const [badgeQuoteIndex, setBadgeQuoteIndex] = useState(0);
   const [badgeOpacity, setBadgeOpacity] = useState(1);
+  const shellRef = useRef<HTMLDivElement>(null);
 
   // Badge quote rotation
   useEffect(() => {
@@ -31,8 +32,131 @@ export const Landing: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Scroll parallax: grid translateY + halo scale
+  useEffect(() => {
+    const grid = document.querySelector<HTMLElement>('.landing-grid');
+    const halo = document.querySelector<HTMLElement>('.landing-halo');
+    if (!grid && !halo) return;
+
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+      if (grid) grid.style.transform = `translateY(${progress * -220}px)`;
+      if (halo) {
+        const scaleProgress = Math.min(progress / 0.55, 1);
+        halo.style.transform = `scale(${1 + scaleProgress * 0.35})`;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Scroll-triggered 3D reveals (IntersectionObserver)
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // reveal-3d elements
+    const reveals = document.querySelectorAll<HTMLElement>('.reveal-3d');
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const delay = (entry.target as HTMLElement).dataset.revealDelay || '0';
+            (entry.target as HTMLElement).style.transitionDelay = `${delay}ms`;
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    );
+    reveals.forEach((el) => revealObserver.observe(el));
+
+    // stat-3d elements
+    const stats = document.querySelectorAll<HTMLElement>('.stat-3d');
+    const statObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            statObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    stats.forEach((el) => statObserver.observe(el));
+
+    // Parallax text layers (mouse-driven)
+    const container = document.querySelector<HTMLElement>('.parallax-text');
+    let parallaxRafId: number | null = null;
+    let mx = 0, my = 0, cx = 0, cy = 0;
+
+    const onMouseMove = (e: MouseEvent) => {
+      mx = (e.clientX / window.innerWidth) * 2 - 1;
+      my = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+
+    const parallaxTick = () => {
+      cx += (mx - cx) * 0.06;
+      cy += (my - cy) * 0.06;
+      if (container) {
+        const layers = container.querySelectorAll<HTMLElement>('[data-depth]');
+        layers.forEach((layer) => {
+          const depth = parseFloat(layer.dataset.depth || '1');
+          layer.style.transform = `translate3d(${cx * depth * 12}px, ${cy * depth * 8}px, 0)`;
+        });
+      }
+      parallaxRafId = requestAnimationFrame(parallaxTick);
+    };
+
+    if (!prefersReducedMotion) {
+      window.addEventListener('mousemove', onMouseMove);
+      parallaxRafId = requestAnimationFrame(parallaxTick);
+    }
+
+    // Hero orbit cards (mouse-driven parallax)
+    const orbitCards = document.querySelectorAll<HTMLElement>('.hero-orbit-card');
+    let orbitMx = 0, orbitMy = 0;
+    let orbitRafId: number | null = null;
+
+    const onOrbitMouseMove = (e: MouseEvent) => {
+      orbitMx = (e.clientX / window.innerWidth) * 2 - 1;
+      orbitMy = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+
+    const orbitTick = () => {
+      orbitCards.forEach((card) => {
+        const depth = parseFloat(card.dataset.parallaxDepth || '1');
+        const offsetX = orbitMx * depth * 18;
+        const offsetY = orbitMy * depth * 12;
+        const rotX = orbitMy * depth * 4;
+        const rotY = -orbitMx * depth * 4;
+        card.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      });
+      orbitRafId = requestAnimationFrame(orbitTick);
+    };
+
+    if (!prefersReducedMotion && orbitCards.length > 0) {
+      window.addEventListener('mousemove', onOrbitMouseMove);
+      orbitRafId = requestAnimationFrame(orbitTick);
+    }
+
+    return () => {
+      revealObserver.disconnect();
+      statObserver.disconnect();
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mousemove', onOrbitMouseMove);
+      if (parallaxRafId) cancelAnimationFrame(parallaxRafId);
+      if (orbitRafId) cancelAnimationFrame(orbitRafId);
+    };
+  }, []);
+
   return (
-    <div className="landing-shell relative min-h-screen overflow-x-hidden cine-vignette">
+    <div ref={shellRef} className="landing-shell relative min-h-screen overflow-x-hidden cine-vignette">
       {/* 3D WebGL Canvas */}
       <LandingScene3D />
 

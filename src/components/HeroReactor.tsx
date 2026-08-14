@@ -59,7 +59,7 @@ export const HeroReactor: React.FC = () => {
       <div className="absolute inset-[22%] rounded-full border border-border/70 animate-[spin_52s_linear_infinite]" />
 
       {/* Orbit Card 1: Mission */}
-      <div className="hero-orbit-card absolute left-[7%] top-[12%] z-10">
+      <div className="hero-orbit-card absolute left-[7%] top-[12%] z-10" data-parallax-depth="0.8">
         <TiltCard intensity={15}>
           <div className="rounded-3xl border border-border bg-card/80 p-5 backdrop-blur-2xl shadow-xl animate-[float-slow_5s_ease-in-out_infinite]">
             <div className="text-xs font-extrabold uppercase tracking-[0.22em] text-muted-foreground">
@@ -73,7 +73,7 @@ export const HeroReactor: React.FC = () => {
       </div>
 
       {/* Orbit Card 2: Deep Work Timer */}
-      <div className="hero-orbit-card absolute right-[2%] top-[20%] z-10">
+      <div className="hero-orbit-card absolute right-[2%] top-[20%] z-10" data-parallax-depth="1.2">
         <TiltCard intensity={15}>
           <div className="rounded-3xl border border-border bg-card/80 p-5 backdrop-blur-2xl shadow-xl animate-[float-slow_6.5s_ease-in-out_infinite_reverse]">
             <div className="text-xs font-extrabold uppercase tracking-[0.22em] text-accent">
@@ -87,7 +87,7 @@ export const HeroReactor: React.FC = () => {
       </div>
 
       {/* Orbit Card 3: Tasks preview */}
-      <div className="hero-orbit-card absolute bottom-[10%] left-[12%] z-10">
+      <div className="hero-orbit-card absolute bottom-[10%] left-[12%] z-10" data-parallax-depth="1.0">
         <TiltCard intensity={15}>
           <div className="w-64 space-y-2 rounded-3xl border border-border bg-card/80 p-5 backdrop-blur-2xl shadow-xl animate-[float-slow_7s_ease-in-out_infinite]">
             <div className="flex items-center gap-3 text-sm font-bold text-foreground opacity-60">

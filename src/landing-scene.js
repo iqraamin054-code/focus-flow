@@ -1,3 +1,13 @@
+/**
+ * MIGRATION CANDIDATE — landing-scene.js
+ *
+ * This file is NOT loaded by the browser. The LandingScene class and
+ * isWebGLAvailable function have been migrated to:
+ *   - src/components/LandingScene3D.tsx
+ *
+ * Safe to delete after build verification passes.
+ */
+
 import * as THREE from 'three';
 
 /**

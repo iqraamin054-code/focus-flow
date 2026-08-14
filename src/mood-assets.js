@@ -1,3 +1,12 @@
+/**
+ * MIGRATION CANDIDATE — mood-assets.js
+ *
+ * This file is NOT loaded by the browser. Its content has been migrated to:
+ *   - src/data/moodAssets.ts
+ *
+ * Safe to delete after build verification passes.
+ */
+
 /** Exam study room — remote source (for download script). */
 export const EXAM_STUDY_VIDEO =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_151826_c7218672-6e92-402c-9e45-f1e0f454bdc4.mp4";

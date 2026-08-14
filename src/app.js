@@ -1,3 +1,17 @@
+/**
+ * MIGRATION CANDIDATE — app.js
+ *
+ * This file is NOT loaded by the browser. The active application is React/TypeScript
+ * served from src/main.tsx. All functionality here has been migrated to:
+ *
+ *   - src/data/moods.ts       (MOODS, SOUNDS, AUDIO_TRACKS, MOTIVATIONAL_QUOTES)
+ *   - src/utils/store.ts      (store, actions, greeting, getMotivationalGreeting)
+ *   - src/utils/audio.ts      (audio controller: setSound, setVolume, stopSound)
+ *   - src/data/moodAssets.ts  (MOOD_ASSETS, getMoodAssets)
+ *
+ * Safe to delete after build verification passes.
+ */
+
 import { EXAM_STUDY_LOCAL, EXAM_STUDY_VIDEO } from "./mood-assets.js";
 
 // MOODS configuration

@@ -410,6 +410,8 @@
   overflow: hidden;
 }
 
+/* Note: .tilt-3d was used by the vanilla app.js init3DTilt() — removed (dead code) */
+
 /* ---- Scroll-Triggered 3D Reveals ---- */
 .reveal-3d {
   opacity: 0;
@@ -467,15 +469,6 @@
   0% { opacity: 0; transform: scale(1.06) perspective(1200px) rotateX(2.5deg); filter: brightness(0.6) blur(6px); }
   60% { filter: brightness(0.9) blur(0); }
   100% { opacity: 1; transform: scale(1) perspective(1200px) rotateX(0); filter: brightness(1) blur(0); }
-}
-
-/* ---- Quote Fade Rotation ---- */
-.quote-fade {
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.quote-fade.hidden {
-  opacity: 0;
-  transform: translateY(-6px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -674,8 +667,6 @@
   100% { transform: translateY(-120px) translateX(30px); opacity: 0; }
 }
 
-.exam-card-preview { overflow: hidden; }
-
 /* ==========================================================================
    FocusFlow Workspace Premium Layout & Animations
    ========================================================================== */
@@ -751,27 +742,6 @@
 .dock-item:hover .dock-tooltip {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-}
-
-/* Floating Panels Styling */
-.floating-panel {
-  display: block !important; /* Managed via opacity & transform instead of layout hidden */
-  opacity: 0;
-  transform: translateY(2rem) scale(0.96);
-  pointer-events: none;
-  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6),
-              0 0 0 1px rgba(255, 255, 255, 0.08) inset;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0.4s;
-  visibility: hidden;
-}
-
-.floating-panel.active {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-  visibility: visible;
 }
 
 /* Wonderspace Vinyl Theme Card Selector */
@@ -886,13 +856,6 @@
 .vinyl-card-wrapper.active .theme-sleeve {
   border-color: var(--color-primary);
   box-shadow: 0 0 20px rgba(var(--color-primary), 0.25);
-}
-
-/* Sound Buttons grid refinements */
-.sound-btn {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
 }
 
 /* Profile forms validation details */

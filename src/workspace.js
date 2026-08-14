@@ -1,3 +1,26 @@
+/**
+ * MIGRATION CANDIDATE — workspace.js
+ *
+ * This file is NOT loaded by the browser. The active workspace is rendered by
+ * the React component at src/pages/Workspace.tsx and its sub-components.
+ *
+ * All functionality has been migrated to:
+ *   - src/pages/Workspace.tsx               (layout, clock, zen mode)
+ *   - src/components/FocusTimer.tsx         (Pomodoro timer, presets)
+ *   - src/components/MissionEditor.tsx      (mission input)
+ *   - src/components/TasksModal.tsx         (task list)
+ *   - src/components/AmbientMixerModal.tsx  (sound controller)
+ *   - src/components/ThemeRoomModal.tsx     (mood switcher)
+ *   - src/components/ParticleLayers.tsx     (particle effects)
+ *   - src/components/VideoBackdrop.tsx      (video background)
+ *   - src/components/UserAccountModal.tsx   (auth forms)
+ *   - src/components/MotivationalQuote.tsx  (quote rotator)
+ *   - src/utils/store.ts                    (state + localStorage)
+ *   - src/utils/audio.ts                    (audio unlock + alarm)
+ *
+ * Safe to delete after build verification passes.
+ */
+
 import {
   MOODS,
   SOUNDS,

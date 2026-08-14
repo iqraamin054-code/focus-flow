@@ -1,4 +1,16 @@
 /**
+ * MIGRATION CANDIDATE — landing-cards-3d.js
+ *
+ * This file is NOT loaded by the browser. Its functionality has been migrated to:
+ *   - src/components/TiltCard.tsx    (TiltCard spring-physics 3D tilt)
+ *   - src/pages/Landing.tsx          (initScrollReveals, initStatsReveal,
+ *                                     initParallaxText, initHeroCardOrbit
+ *                                     — all wired via useEffect)
+ *
+ * Safe to delete after build verification passes.
+ */
+
+/**
  * landing-cards-3d.js — Enhanced 3D interactions for all landing-page cards.
  *
  * Features:
