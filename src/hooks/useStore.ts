@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { WorkspaceState } from '../types/focus';
-import { getState, loadStore, subscribe } from '../utils/store';
+import { loadStore, subscribe } from '../utils/store';
 
 export function useStore(): WorkspaceState {
   const [state, setState] = useState<WorkspaceState>(() => {

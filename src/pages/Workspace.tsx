@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../hooks/useStore';
 import { getMotivationalGreeting } from '../utils/store';
 import { MOODS } from '../data/moods';
-import { initGestureUnlock } from '../utils/audio';
+import { initGestureUnlock, setSound } from '../utils/audio';
 
 import { VideoBackdrop } from '../components/VideoBackdrop';
 import { ParticleLayers } from '../components/ParticleLayers';
@@ -52,6 +52,11 @@ export const Workspace: React.FC = () => {
   useEffect(() => {
     initGestureUnlock();
   }, []);
+
+  // Sync audio engine when state.sound changes (e.g. theme switch auto-selects a sound)
+  useEffect(() => {
+    setSound(state.sound);
+  }, [state.sound]);
 
   // Live clock interval
   useEffect(() => {
