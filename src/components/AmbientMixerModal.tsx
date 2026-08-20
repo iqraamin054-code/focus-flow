@@ -45,7 +45,6 @@ export const AmbientMixerModal: React.FC<AmbientMixerModalProps> = ({
 
   const handleSoundSelect = (id: string) => {
     actions.setSound(id);
-    setSound(id);
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {

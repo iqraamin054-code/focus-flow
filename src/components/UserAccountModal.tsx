@@ -15,35 +15,49 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
   const [view, setView] = useState<'signin' | 'signup'>('signin');
   const [signinEmail, setSigninEmail] = useState('');
   const [signinPassword, setSigninPassword] = useState('');
+  const [signinError, setSigninError] = useState<string | null>(null);
 
   const [signupName, setSignupName] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
+  const [signupError, setSignupError] = useState<string | null>(null);
+
+  const [isShaking, setIsShaking] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
+  const triggerShake = () => {
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 400);
+  };
+
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
+    setSigninError(null);
     const res = actions.login(signinEmail.trim(), signinPassword);
     if (!res.success) {
-      alert(res.error || "Login failed");
+      setSigninError(res.error || "No account was found with this email. Please check your email or create an account.");
+      triggerShake();
     } else {
       setSigninEmail('');
       setSigninPassword('');
+      setSigninError(null);
       onClose();
     }
   };
 
   const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();
+    setSignupError(null);
     const res = actions.signUp(signupName.trim(), signupEmail.trim(), signupPassword);
     if (!res.success) {
-      alert(res.error || "Registration failed");
+      setSignupError(res.error || "Registration failed. Please check your details.");
+      triggerShake();
     } else {
       setSignupName('');
       setSignupEmail('');
       setSignupPassword('');
-      setView('signin');
+      setSignupError(null);
       onClose();
     }
   };
@@ -51,6 +65,12 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
   const handleLogout = () => {
     actions.logout();
     onClose();
+  };
+
+  const switchView = (targetView: 'signin' | 'signup') => {
+    setSigninError(null);
+    setSignupError(null);
+    setView(targetView);
   };
 
   return (
@@ -109,7 +129,7 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
           </div>
         ) : view === 'signin' ? (
           /* Sign In View */
-          <div id="auth-signin-container">
+          <div id="auth-signin-container" className={isShaking ? 'animate-shake' : ''}>
             <p className="text-xs text-muted-foreground mb-4">
               Log in to keep track of your focus streak and custom settings.
             </p>
@@ -121,9 +141,18 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
                   placeholder="Email Address"
                   required
                   value={signinEmail}
-                  onChange={(e) => setSigninEmail(e.target.value)}
-                  className="auth-input"
+                  onChange={(e) => {
+                    setSigninEmail(e.target.value);
+                    if (signinError) setSigninError(null);
+                  }}
+                  className={`auth-input ${signinError ? 'error' : ''}`}
                 />
+                {signinError && (
+                  <div id="signin-error-msg" className="flex items-center gap-1.5 text-xs text-red-500 font-medium mt-1.5 animate-[fade-in-up_0.2s_ease-out]">
+                    <span>⚠️</span>
+                    <span>{signinError}</span>
+                  </div>
+                )}
               </div>
               <div>
                 <input
@@ -132,7 +161,10 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
                   placeholder="Password"
                   required
                   value={signinPassword}
-                  onChange={(e) => setSigninPassword(e.target.value)}
+                  onChange={(e) => {
+                    setSigninPassword(e.target.value);
+                    if (signinError) setSigninError(null);
+                  }}
                   className="auth-input"
                 />
               </div>
@@ -145,7 +177,7 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
               <button
                 type="button"
                 id="go-to-signup-btn"
-                onClick={() => setView('signup')}
+                onClick={() => switchView('signup')}
                 className="text-primary font-bold ml-1 hover:underline cursor-pointer"
               >
                 Create Account
@@ -154,7 +186,7 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
           </div>
         ) : (
           /* Sign Up View */
-          <div id="auth-signup-container">
+          <div id="auth-signup-container" className={isShaking ? 'animate-shake' : ''}>
             <p className="text-xs text-muted-foreground mb-4">
               Create your study dashboard and customize your environment.
             </p>
@@ -163,10 +195,13 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
                 <input
                   type="text"
                   id="signup-name"
-                  placeholder="Your First Name (e.g. Iqra)"
+                  placeholder="Enter your full name"
                   required
                   value={signupName}
-                  onChange={(e) => setSignupName(e.target.value)}
+                  onChange={(e) => {
+                    setSignupName(e.target.value);
+                    if (signupError) setSignupError(null);
+                  }}
                   className="auth-input"
                 />
               </div>
@@ -177,9 +212,18 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
                   placeholder="Email Address"
                   required
                   value={signupEmail}
-                  onChange={(e) => setSignupEmail(e.target.value)}
-                  className="auth-input"
+                  onChange={(e) => {
+                    setSignupEmail(e.target.value);
+                    if (signupError) setSignupError(null);
+                  }}
+                  className={`auth-input ${signupError ? 'error' : ''}`}
                 />
+                {signupError && (
+                  <div id="signup-error-msg" className="flex items-center gap-1.5 text-xs text-red-500 font-medium mt-1.5 animate-[fade-in-up_0.2s_ease-out]">
+                    <span>⚠️</span>
+                    <span>{signupError}</span>
+                  </div>
+                )}
               </div>
               <div>
                 <input
@@ -188,7 +232,10 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
                   placeholder="Password"
                   required
                   value={signupPassword}
-                  onChange={(e) => setSignupPassword(e.target.value)}
+                  onChange={(e) => {
+                    setSignupPassword(e.target.value);
+                    if (signupError) setSignupError(null);
+                  }}
                   className="auth-input"
                 />
               </div>
@@ -201,7 +248,7 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
               <button
                 type="button"
                 id="go-to-signin-btn"
-                onClick={() => setView('signin')}
+                onClick={() => switchView('signin')}
                 className="text-primary font-bold ml-1 hover:underline cursor-pointer"
               >
                 Sign In

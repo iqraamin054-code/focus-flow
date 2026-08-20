@@ -41,7 +41,19 @@ export function loadStore(): WorkspaceState {
   return state;
 }
 
+function syncCurrentUserToUsers(): void {
+  if (state.currentUser) {
+    const email = state.currentUser.email;
+    state.users = state.users.map((u) =>
+      u.email.toLowerCase() === email.toLowerCase()
+        ? { ...u, stats: { ...state.stats }, tasks: [...state.tasks], mission: state.mission }
+        : u
+    );
+  }
+}
+
 export function saveStore(): void {
+  syncCurrentUserToUsers();
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (e) {
@@ -120,16 +132,6 @@ export const actions = {
   completeSession(seconds: number): void {
     state.stats.sessions += 1;
     state.stats.focusSeconds += seconds;
-
-    if (state.currentUser) {
-      const email = state.currentUser.email;
-      state.users = state.users.map((u) =>
-        u.email.toLowerCase() === email.toLowerCase()
-          ? { ...u, stats: state.stats }
-          : u
-      );
-    }
-
     saveStore();
   },
 
@@ -147,16 +149,12 @@ export const actions = {
       name,
       email,
       password,
-      stats: { sessions: 0, tasksDone: 0, focusSeconds: 0 },
-      tasks: [],
-      mission: "",
+      stats: { ...state.stats },
+      tasks: [...state.tasks],
+      mission: state.mission,
     };
     state.users = [...users, newUser];
     state.currentUser = { name, email };
-
-    state.stats = newUser.stats;
-    state.tasks = newUser.tasks;
-    state.mission = newUser.mission;
 
     saveStore();
     return { success: true };
@@ -168,39 +166,44 @@ export const actions = {
     }
 
     const users = state.users || [];
-    const foundUser = users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+    const userByEmail = users.find(
+      (u) => u.email.toLowerCase() === email.toLowerCase()
     );
 
-    if (!foundUser) {
-      return { success: false, error: "Invalid email or password." };
+    if (!userByEmail) {
+      return {
+        success: false,
+        error: "No account was found with this email. Please check your email or create an account.",
+      };
     }
 
-    state.currentUser = { name: foundUser.name, email: foundUser.email };
-    state.stats = foundUser.stats || { sessions: 0, tasksDone: 0, focusSeconds: 0 };
-    state.tasks = foundUser.tasks || [];
-    state.mission = foundUser.mission || "";
+    if (userByEmail.password !== password) {
+      return { success: false, error: "Incorrect password. Please try again." };
+    }
+
+    state.currentUser = { name: userByEmail.name, email: userByEmail.email };
+    state.stats = userByEmail.stats || { sessions: 0, tasksDone: 0, focusSeconds: 0 };
+    state.tasks = userByEmail.tasks || [];
+    state.mission = userByEmail.mission || "";
 
     saveStore();
     return { success: true };
   },
 
   logout(): void {
-    if (state.currentUser) {
-      const email = state.currentUser.email;
-      state.users = state.users.map((u) =>
-        u.email.toLowerCase() === email.toLowerCase()
-          ? { ...u, stats: state.stats, tasks: state.tasks, mission: state.mission }
-          : u
-      );
-    }
+    syncCurrentUserToUsers();
 
     state.currentUser = null;
     state.stats = { sessions: 0, tasksDone: 0, focusSeconds: 0 };
     state.tasks = [];
     state.mission = "";
 
-    saveStore();
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.error("Failed to write to localStorage", e);
+    }
+    notify();
   },
 };
 

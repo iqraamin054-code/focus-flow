@@ -5,6 +5,7 @@ let audio: HTMLAudioElement | null = null;
 let currentSound = "silence";
 let volume = 0.35;
 let audioUnlocked = false;
+let playToken = 0;
 
 export function getSound(): string {
   return currentSound;
@@ -14,51 +15,84 @@ export function getVolume(): number {
   return volume;
 }
 
+function stopCurrentAudioInternal(): void {
+  if (audio) {
+    if (currentSound !== "silence") {
+      console.log(`[AUDIO] stopping: ${currentSound}`);
+    }
+    try {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.onended = null;
+      audio.onerror = null;
+      audio.oncanplay = null;
+      audio.src = "";
+      audio.load();
+    } catch (e) {
+      /* ignore */
+    }
+    audio = null;
+  }
+}
+
 export function setSound(id: string): void {
   if (id === currentSound && audio) {
     audio.volume = volume;
     if (audio.paused) {
-      audio.play().catch(() => {
-        console.log("Audio play blocked by browser policy. User gesture required first.");
+      const token = ++playToken;
+      audio.play().catch((err) => {
+        if (token === playToken) {
+          console.log(`[AUDIO] play blocked by browser policy for ${id}. User gesture required.`);
+        }
       });
     }
     return;
   }
 
-  if (audio) {
-    try {
-      audio.pause();
-    } catch {
-      /* ignore */
-    }
-    audio.src = "";
-    audio = null;
-  }
+  stopCurrentAudioInternal();
 
   currentSound = id;
-  if (id === "silence") return;
+  const token = ++playToken;
+
+  if (!id || id === "silence") {
+    console.log("[AUDIO] silence");
+    return;
+  }
 
   const url = AUDIO_TRACKS[id];
-  if (!url) return;
+  if (!url) {
+    console.warn(`[AUDIO] No track URL for sound: ${id}`);
+    return;
+  }
+
+  console.log(`[AUDIO] starting: ${id}`);
 
   const a = new Audio(url);
   a.loop = true;
   a.volume = volume;
 
   if (id === "exam") {
-    a.addEventListener("error", () => {
-      if (!a.src.includes(EXAM_STUDY_VIDEO)) {
-        a.src = EXAM_STUDY_VIDEO;
-        a.play().catch(() => {});
-      }
-    }, { once: true });
+    a.addEventListener(
+      "error",
+      () => {
+        if (token !== playToken) return;
+        if (!a.src.includes(EXAM_STUDY_VIDEO)) {
+          console.log("[AUDIO] exam local failed, trying remote fallback");
+          a.src = EXAM_STUDY_VIDEO;
+          a.play().catch(() => {});
+        }
+      },
+      { once: true }
+    );
   }
 
-  a.play().catch(() => {
-    console.log("Audio play blocked by browser policy. Interactivity required first.");
-  });
-
   audio = a;
+
+  a.play().catch((err) => {
+    if (token === playToken) {
+      console.log(`[AUDIO] play blocked by browser policy for ${id}. Interactivity required first.`);
+    }
+  });
 }
 
 export function setVolume(v: number): void {
@@ -69,16 +103,9 @@ export function setVolume(v: number): void {
 }
 
 export function stopSound(): void {
-  if (audio) {
-    try {
-      audio.pause();
-    } catch {
-      /* ignore */
-    }
-    audio.src = "";
-    audio = null;
-  }
+  stopCurrentAudioInternal();
   currentSound = "silence";
+  console.log("[AUDIO] silence");
 }
 
 export function initGestureUnlock(): void {
@@ -88,16 +115,16 @@ export function initGestureUnlock(): void {
     if (audioUnlocked) return;
     audioUnlocked = true;
 
-    if (currentSound !== 'silence') {
-      setSound(currentSound);
+    if (currentSound !== "silence" && audio && audio.paused) {
+      audio.play().catch(() => {});
     }
 
-    document.body.removeEventListener('click', unlock);
-    document.body.removeEventListener('keydown', unlock);
+    document.body.removeEventListener("click", unlock);
+    document.body.removeEventListener("keydown", unlock);
   };
 
-  document.body.addEventListener('click', unlock);
-  document.body.addEventListener('keydown', unlock);
+  document.body.addEventListener("click", unlock);
+  document.body.addEventListener("keydown", unlock);
 }
 
 export function playAlarmNotification(): void {

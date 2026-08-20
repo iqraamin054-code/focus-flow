@@ -1052,6 +1052,21 @@ input, button, select, textarea {
   transition: color 0.3s ease;
 }
 
+.auth-input.error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+}
+
+@keyframes inputShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.animate-shake {
+  animation: inputShake 0.4s ease-in-out;
+}
+
 .auth-submit-btn {
   width: 100%;
   background: var(--color-primary);
