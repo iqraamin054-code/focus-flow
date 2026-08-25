@@ -21,6 +21,10 @@ const SOUND_GRADIENT_MAP: Record<string, string> = {
   vinyl: "linear-gradient(135deg, #2a2a2a, #555555, #888888)",
   exam: "linear-gradient(135deg, #1a1814, #3d3529, #c4a574)",
   silence: "linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e)",
+  ocean: "linear-gradient(135deg, #0a2a4a, #1a5a8a, #4aa0d0)",
+  thunderstorm: "linear-gradient(135deg, #1a1a2a, #2a2a3a, #4a4a6a)",
+  wind: "linear-gradient(135deg, #1a2a1a, #3a5a3a, #8aaa8a)",
+  night: "linear-gradient(135deg, #05050f, #0d0d2b, #1a1a4a)",
 };
 
 const SOUND_ICON_MAP: Record<string, string> = {
@@ -32,6 +36,10 @@ const SOUND_ICON_MAP: Record<string, string> = {
   vinyl: "💿",
   exam: "📖",
   silence: "🔇",
+  ocean: "🌊",
+  thunderstorm: "⛈️",
+  wind: "🌬️",
+  night: "🌙",
 };
 
 export const AmbientMixerModal: React.FC<AmbientMixerModalProps> = ({

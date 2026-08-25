@@ -60,6 +60,10 @@ export const SOUNDS: AmbientSound[] = [
   { id: "fireplace", label: "Fireplace" },
   { id: "vinyl", label: "Vinyl" },
   { id: "exam", label: "Exam Room" },
+  { id: "ocean", label: "Ocean" },
+  { id: "thunderstorm", label: "Thunderstorm" },
+  { id: "wind", label: "Wind" },
+  { id: "night", label: "Night Crickets" },
   { id: "silence", label: "Silence" },
 ];
 
@@ -71,6 +75,10 @@ export const AUDIO_TRACKS: Record<string, string> = {
   fireplace: "https://raw.githubusercontent.com/karthiknvd/noctune/master/sounds/campfire.mp3",
   vinyl:  "https://raw.githubusercontent.com/karthiknvd/noctune/master/sounds/vinyl.mp3",
   exam: EXAM_STUDY_LOCAL,
+  ocean:        "https://raw.githubusercontent.com/karthiknvd/noctune/master/sounds/river.mp3",
+  thunderstorm: "https://raw.githubusercontent.com/karthiknvd/noctune/master/sounds/thunder.mp3",
+  wind:         "https://raw.githubusercontent.com/karthiknvd/noctune/master/sounds/wind.mp3",
+  night:        "https://raw.githubusercontent.com/karthiknvd/noctune/master/sounds/night.mp3",
 };
 
 export const MOTIVATIONAL_QUOTES = [
